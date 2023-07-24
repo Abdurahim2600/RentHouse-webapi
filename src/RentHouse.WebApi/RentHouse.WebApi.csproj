@@ -7,8 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+    <PackageReference Include="Npgsql" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+    <Folder Include="Filters\" />
+    <Folder Include="Middlewares\" />
+    <Folder Include="wwwroot\media\Audios\" />
+    <Folder Include="wwwroot\media\Documents\" />
+    <Folder Include="wwwroot\media\Avatars\" />
+    <Folder Include="wwwroot\media\Videos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RentHouse.Service\RentHouse.Service.csproj" />
   </ItemGroup>
 
 </Project>

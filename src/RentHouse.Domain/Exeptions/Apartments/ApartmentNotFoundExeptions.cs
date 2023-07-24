@@ -1,4 +1,4 @@
-﻿namespace RentHouse.Domain.Exeptions.Apartment;
+﻿namespace RentHouse.Domain.Exeptions.Apartments;
 
 public class ApartmentNotFoundExeptions : NotFoundExseptions
 {
