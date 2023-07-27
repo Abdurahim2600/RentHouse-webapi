@@ -2,7 +2,7 @@
 
 namespace RentHouse.Domain.Entities.Admins;
 
-public class Admins : Auditable
+public class Admin : Auditable
 {
     [MaxLength(50)]
 

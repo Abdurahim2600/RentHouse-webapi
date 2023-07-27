@@ -9,4 +9,17 @@ public class MediaHealper
         string name = "IMG_" + Guid.NewGuid()+extension;
         return name;
     }
+    public static string[] GetImageExtensions() 
+    {
+        return new string[]
+        {
+            ".jpg",
+            ".PNG",
+            ".svg",
+            ".jpeg",
+            ".bmp",
+            ".heic"
+
+        };
+    }
 }

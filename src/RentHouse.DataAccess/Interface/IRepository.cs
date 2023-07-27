@@ -4,6 +4,7 @@ public interface IRepository<TEntity, TviewModel>
 {
     public Task<int> CreateAsync(TEntity entity);
 
+    
 
     public Task<int> UpdateAsync(long id,TEntity entity);
 

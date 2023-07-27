@@ -4,6 +4,7 @@ using RentHouse.DataAccess.Interface;
 using RentHouse.DataAccess.Interface.Apartments;
 using RentHouse.DataAccess.Utils;
 using RentHouse.Domain.Entities.Apartments;
+using RentHouse.Domain.Entities.Users;
 
 namespace RentHouse.DataAccess.Repository.Apartments;
 
@@ -36,8 +37,8 @@ public class ApartmentRepositorys : BaseRepository, IApartmentRepository
         {
             await _connection.OpenAsync();
             string query = "INSERT INTO public.apartment(" +
-                "description, adress, image_path, common_price, roomcount, created_at, updated_at)" +
-                "VALUES (@Describtion, @Adress, @Image_Path, @CommonPrice, @RoomCount, @CreatedAt, @UpdatedAt);";
+                "description, Comment, image_path, common_price, roomcount, created_at, updated_at)" +
+                "VALUES (@Describtion, @Comment, @ImagePath, @CommonPrice, @RoomCount, @CreatedAt, @UpdatedAt);";
             var result = await _connection.ExecuteAsync(query, entity);
             return result;
         }
@@ -79,7 +80,7 @@ public class ApartmentRepositorys : BaseRepository, IApartmentRepository
         {
             await _connection.OpenAsync();
             string query = $"SELECT * FROM apartment order by id desc " +
-                $"offset {/*@params.GetSkipCount()*/1} limit {@params.PageSize}";
+                $"offset {0} limit {@params.PageSize}";
             var result = (await _connection.QueryAsync<Apartment>(query)).ToList();
             return result;
         }
@@ -103,9 +104,9 @@ public class ApartmentRepositorys : BaseRepository, IApartmentRepository
         try
         {
             await _connection.OpenAsync();
-            string query = "UPDATE public.apartment" +
-                "SET description=@Description, adress=@Adress, image_path = @ImagePath, common_price=@CommonPrice, roomcount=@RoomCount, created_at=@CreatedAt, updated_at=@UpdatedAt" +
-                $"WHERE id={id};";
+            string query = "UPDATE public.apartment " +
+                " SET description = @Description, comment = @Comment, image_path = @ImagePath, common_price = @CommonPrice, roomcount = @RoomCount, created_at = @CreatedAt, updated_at = @UpdatedAt " +
+                $" WHERE id={id};";
             var result = await _connection.ExecuteAsync(query, entity);
             return result;
         }
@@ -139,4 +140,27 @@ public class ApartmentRepositorys : BaseRepository, IApartmentRepository
     }
 
     
+    public Task<IList<Apartment>> SearchAsync(Apartment describtion, Apartment commonPrice, Apartment roomCount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User> GetByPhoneAsync(string phone)
+    {
+        try
+        {
+            await _connection.OpenAsync();
+            string query = "SELECT * FROM users where phone_number = @PhoneNumber";
+            var data = await _connection.QuerySingleAsync<User>(query, new { PhoneNumber = phone });
+            return data;
+        }
+        catch
+        {
+            return null;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
+    }
 }

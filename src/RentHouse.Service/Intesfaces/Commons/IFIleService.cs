@@ -14,6 +14,8 @@ public interface IFIleService
     public Task<string> UploadAvatarAsync(IFormFile avatar);
 
 
+
+
     public Task<bool> DeleteAvatarAsync(string subpath);
 
 }
