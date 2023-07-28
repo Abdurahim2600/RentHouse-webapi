@@ -6,12 +6,17 @@ using RentHouse.DataAccess.Repository.Apartments;
 using RentHouse.DataAccess.Repository.Users;
 using RentHouse.Service.Intesfaces.Admins;
 using RentHouse.Service.Intesfaces.Apartments;
+using RentHouse.Service.Intesfaces.Auth;
 using RentHouse.Service.Intesfaces.Commons;
+using RentHouse.Service.Intesfaces.Notifications;
 using RentHouse.Service.Intesfaces.Users;
 using RentHouse.Service.Services.Admins;
 using RentHouse.Service.Services.Apartments;
+using RentHouse.Service.Services.Auth;
 using RentHouse.Service.Services.Commons;
+using RentHouse.Service.Services.Notifications;
 using RentHouse.Service.Services.Users;
+using RentHouse.WebApi.Configurations;
 //using RentHouse.Service.Services.Apartments;
 //using RentHouse.Service.Services.Commons;
 
@@ -25,14 +30,22 @@ internal class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddMemoryCache();
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IApartmentRepository, ApartmentRepositorys>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IEmailSender, SmsSender>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+
         builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<IFIleService, FileService>();
         builder.Services.AddScoped<IApartmentService, ApartmentService>();
-
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.ConfigureJwtAuth();
+        builder.ConfigureSwaggerAuth();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -46,11 +59,17 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        //app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
         app.MapControllers();
 
         app.Run();
+
     }
 }

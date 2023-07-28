@@ -39,8 +39,8 @@ public class UserRepository : BaseRepository, IUserRepository
 
             await _connection.OpenAsync();
             string query = "INSERT INTO public.users(" +
-                "first_name, last_name, phone_number, passport_seria_number, is_male, birth_date, password, image_path, created_at, updated_at, email)" +
-                "VALUES(@FirstName, @LastName, @PhoneNumber, @PassportSeriaNumber, @IsMale, @BirthDate, @Password, @ImagePath, @CreatedAt, @UpdatedAt,@Email); ";
+                "first_name, last_name, phone_number, passport_seria_number, is_male, birth_date,identity_role, image_path, created_at, updated_at, email,password_hash,salt,emailconfirmed)" +
+                "VALUES(@FirstName, @LastName, @PhoneNumber, @PassportSeriaNumber, @IsMale, @BirthDate, @IdentityRole, @ImagePath, @CreatedAt, @UpdatedAt,@Email,@PasswordHash,@Salt,@EmailConfirmed); ";
             var result = await _connection.ExecuteAsync(query, entity);
             return result;
         }
@@ -97,6 +97,25 @@ public class UserRepository : BaseRepository, IUserRepository
             await _connection.CloseAsync();
         }
         
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        try
+        {
+            await _connection.OpenAsync();
+            string query = "SELECT *FROM users WHERE email = @Email;";
+            var data = await _connection.QuerySingleAsync<User>(query, new { Email = email });
+            return data;
+        }
+        catch
+        {
+            return null;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 
     public async Task<UserViewModel?> GetByIdAsync(long id)

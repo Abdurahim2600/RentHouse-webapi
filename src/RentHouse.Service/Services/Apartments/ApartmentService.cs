@@ -1,4 +1,5 @@
-﻿using RentHouse.DataAccess.Interface.Apartments;
+﻿using Microsoft.Extensions.Caching.Memory;
+using RentHouse.DataAccess.Interface.Apartments;
 using RentHouse.DataAccess.Utils;
 using RentHouse.Domain.Entities.Apartments;
 using RentHouse.Domain.Exeptions.Apartments;
@@ -11,16 +12,19 @@ namespace RentHouse.Service.Services.Apartments;
 
 public class ApartmentService : IApartmentService
 {
-    private readonly IApartmentRepository repository;
+    private readonly IApartmentRepository _repository;
     private readonly IFIleService _fileServise;
-
+    private readonly IMemoryCache _memoryCache;
+    private const int second = 30;
     public ApartmentService(IApartmentRepository apartmentRepository,
-        IFIleService fIleService)
+        IFIleService fIleService,
+        IMemoryCache memorycache)
     {
-        this.repository = apartmentRepository;
+        this._repository = apartmentRepository;
         this._fileServise = fIleService;
+        this._memoryCache = memorycache;
     }
-    public async Task<long> CountAsync() => await repository.CountAsync();
+    public async Task<long> CountAsync() => await _repository.CountAsync();
 
 
     public async Task<bool> CreateAsync(ApartmentCreatedDto dto)
@@ -38,26 +42,26 @@ public class ApartmentService : IApartmentService
             UpdatedAt = TimeHelper.GetDateTime(),
             Comment = dto.Comment
         };
-        var result = await repository.CreateAsync(apartment);
+        var result = await _repository.CreateAsync(apartment);
         return result > 0;
     }
 
     public async Task<bool> DeleteAsync(long apartmentId)
     {
-        var apartment = await repository.GetByIdAsync(apartmentId);
+        var apartment = await _repository.GetByIdAsync(apartmentId);
         if (apartment is null) throw new ApartmentNotFoundExeptions();
 
         var result = await _fileServise.DeleteImageAsync(apartment.ImagePath);
         if (result == false) throw new ImageNotFoundExeptions();
 
-        var dbResult = await repository.DeleteAsync(apartmentId);
+        var dbResult = await _repository.DeleteAsync(apartmentId);
         return dbResult > 0;
 
     }
     public async Task<bool> UpdateAsync(long apartmentId, ApartmentCreatedDto dto)
     {
 
-        var apartment = await repository.GetByIdAsync(apartmentId);
+        var apartment = await _repository.GetByIdAsync(apartmentId);
         if (apartment is null) throw new ApartmentNotFoundExeptions();
 
         // parse new items to category
@@ -82,25 +86,34 @@ public class ApartmentService : IApartmentService
 
         apartment.UpdatedAt = TimeHelper.GetDateTime();
 
-        var dbResult = await repository.UpdateAsync(apartmentId, apartment);
+        var dbResult = await _repository.UpdateAsync(apartmentId, apartment);
         return dbResult > 0;
     }
     public async Task<IList<Apartment>> GetAllAsync(PaginationParams @params)
     {
-        var apartments = await repository.GetAllAsync(@params);
+        var apartments = await _repository.GetAllAsync(@params);
         return apartments;
     }
 
-    public async Task<Apartment> GetByIdAsync(long id)
+    public async Task<Apartment> GetByIdAsync(long apartmentid)
     {
-        var apartments = await repository.GetByIdAsync(id);
-        if (apartments is null) throw new ApartmentNotFoundExeptions();
-        else return apartments;
+        if(_memoryCache.TryGetValue(apartmentid,out Apartment cacheapartment))
+        {
+            return cacheapartment;
+        }
+        else
+        {
+            var apartment = await _repository.GetByIdAsync(apartmentid);
+            if (apartment is null) throw new ApartmentNotFoundExeptions();
+            _memoryCache.Set(apartmentid, apartment,TimeSpan.FromSeconds(second));
+            return apartment;
+
+        }
     }
 
     public async Task<bool> UpdateAsync(long apartmentId, ApartmentUpdateDto dto)
     {
-        var apartment = await repository.GetByIdAsync(apartmentId);
+        var apartment = await _repository.GetByIdAsync(apartmentId);
         if (apartment is null) throw new ApartmentNotFoundExeptions();
 
         //parse new items to apartment
@@ -120,7 +133,7 @@ public class ApartmentService : IApartmentService
         }
         //path new pars apartment
         apartment.UpdatedAt = TimeHelper.GetDateTime();
-        var dbResult = await repository.UpdateAsync(apartmentId, apartment);
+        var dbResult = await _repository.UpdateAsync(apartmentId, apartment);
         return dbResult > 0;
         //else return false;
     }

@@ -10,6 +10,6 @@ public interface IUserRepository : IRepository<User, UserViewModel>,
     IGetAll<UserViewModel>
     
 {
-    
+    public Task<User?> GetByEmailAsync(string email);
     public Task<User?> GetByPhoneAsync(string phone);
 }

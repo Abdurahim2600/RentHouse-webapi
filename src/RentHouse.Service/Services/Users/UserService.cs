@@ -37,7 +37,6 @@ public class UserService : IUserService
             PassportSeriaNumber = dto.Passport,
             IsMale = dto.IsMale,
             BirthDate = dto.BirthDate,
-            Password = dto.Password,
             ImagePath = imagepaht,
             
             

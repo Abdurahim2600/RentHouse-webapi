@@ -37,8 +37,8 @@ public class ApartmentRepositorys : BaseRepository, IApartmentRepository
         {
             await _connection.OpenAsync();
             string query = "INSERT INTO public.apartment(" +
-                "description, Comment, image_path, common_price, roomcount, created_at, updated_at)" +
-                "VALUES (@Describtion, @Comment, @ImagePath, @CommonPrice, @RoomCount, @CreatedAt, @UpdatedAt);";
+                "description, image_path, common_price, roomcount, created_at, updated_at,comment)" +
+                "VALUES (@Description,@ImagePath, @CommonPrice, @RoomCount, @CreatedAt, @UpdatedAt, @Comment);";
             var result = await _connection.ExecuteAsync(query, entity);
             return result;
         }

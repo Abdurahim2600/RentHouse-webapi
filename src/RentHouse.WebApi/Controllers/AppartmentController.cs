@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RentHouse.DataAccess.Utils;
 using RentHouse.Service.Dtos.Apartments;
 using RentHouse.Service.Intesfaces.Apartments;
@@ -18,12 +19,12 @@ namespace RentHouse.WebApi.Controllers
             this._service = service;
         }
         [HttpGet("GetAll")]
-
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1)
             => Ok(await _service.GetAllAsync(new PaginationParams(page, MaxPageSize)));
 
         [HttpPut("{apartmentId}")]
-
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateAsync(long apartmentId, [FromForm] ApartmentUpdateDto dto)
         {
             var updateValidator = new ApartmentUpdateValidator();
@@ -32,15 +33,18 @@ namespace RentHouse.WebApi.Controllers
             else return BadRequest(validationResult.Errors);
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> CountAsync()
             => Ok(await _service.CountAsync());
         
         [HttpGet("{getbyid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByIdAsync(long getbyid)
             => Ok(await _service.GetByIdAsync(getbyid));
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateAsyncs([FromForm] ApartmentCreatedDto dto)
         {
             var Valid = new ApartmentCreateValidator();
@@ -49,7 +53,7 @@ namespace RentHouse.WebApi.Controllers
             else { return BadRequest(result.Errors); }
         }
         [HttpDelete]
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(long apartmentid)
             => Ok(await _service.DeleteAsync(apartmentid));
     }
