@@ -12,8 +12,7 @@ public class PasswordValidatorTest
     [InlineData("AAaa@@1@")]
     [InlineData("AAadhgdkjfgdkfjgkjda@@1@")]
     [InlineData("AAaa@@1@37938t34iteri")]
-    [InlineData("Aaaa" +
-        "aa@@1@")]
+    [InlineData("Aaaaaa@@1@")]
     [InlineData("AA1a____")]
     [InlineData("AAaa@111")]
     [InlineData("Aaaa@@11")]

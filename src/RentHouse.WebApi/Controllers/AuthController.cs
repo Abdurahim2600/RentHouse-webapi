@@ -50,12 +50,19 @@ namespace RentHouse.WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
         {
+            var dto = new RegisterDto();
+            
             var validator = new LoginValidator();
             var valResult = validator.Validate(loginDto);
             if (valResult.IsValid == false) return BadRequest(valResult.Errors);
 
             var serviceResult = await _authservise.LoginAsync(loginDto);
-            return Ok(new { serviceResult.Result, serviceResult.Token });
+            if (dto.Password == loginDto.Password && dto.Email == loginDto.Email)
+            {
+                return Ok(new { serviceResult.Result, serviceResult.Token });
+            }
+            else return BadRequest();
+
         }
 
 

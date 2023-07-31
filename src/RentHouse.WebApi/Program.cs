@@ -18,6 +18,7 @@ using RentHouse.Service.Services.Notifications;
 using RentHouse.Service.Services.Users;
 using RentHouse.WebApi.Configurations;
 using RentHouse.WebApi.Configurations.Layer;
+using RentHouse.WebApi.Middlewares;
 //using RentHouse.Service.Services.Apartments;
 //using RentHouse.Service.Services.Commons;
 
@@ -65,7 +66,7 @@ internal class Program
         app.UseCors("AllowAll");
         app.UseStaticFiles();
 
-        //app.UseMiddleware<ExceptionHandlerMiddleware>();
+        app.UseMiddleware<ExceptionHandlerMiddleware>();
 
         app.UseAuthentication();
 

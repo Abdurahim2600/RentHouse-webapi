@@ -14,9 +14,10 @@ public class UserCreateDto
 
     public bool IsMale { get; set; }
 
-    public DateTime BirthDate { get; set; }
 
-    public int IdentityRole { get; set; }
+    public string Password { get; set; } = string.Empty;
+
+    public DateTime BirthDate { get; set; }
 
     public IFormFile? ImagePath { get; set; }
 
