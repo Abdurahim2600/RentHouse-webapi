@@ -57,11 +57,9 @@ namespace RentHouse.WebApi.Controllers
             if (valResult.IsValid == false) return BadRequest(valResult.Errors);
 
             var serviceResult = await _authservise.LoginAsync(loginDto);
-            if (dto.Password == loginDto.Password && dto.Email == loginDto.Email)
-            {
-                return Ok(new { serviceResult.Result, serviceResult.Token });
-            }
-            else return BadRequest();
+            
+            return Ok(new { serviceResult.Result, serviceResult.Token });
+            
 
         }
 
