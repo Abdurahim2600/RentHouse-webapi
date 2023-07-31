@@ -17,6 +17,7 @@ using RentHouse.Service.Services.Commons;
 using RentHouse.Service.Services.Notifications;
 using RentHouse.Service.Services.Users;
 using RentHouse.WebApi.Configurations;
+using RentHouse.WebApi.Configurations.Layer;
 //using RentHouse.Service.Services.Apartments;
 //using RentHouse.Service.Services.Commons;
 
@@ -45,6 +46,8 @@ internal class Program
         builder.Services.AddScoped<IApartmentService, ApartmentService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.ConfigureJwtAuth();
+        builder.ConfigureDataAccess();
+        builder.ConfigureServiceLayer();
         builder.ConfigureSwaggerAuth();
         var app = builder.Build();
 
@@ -52,13 +55,14 @@ internal class Program
 
 
 
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
+        app.UseCors("AllowAll");
         app.UseStaticFiles();
 
         //app.UseMiddleware<ExceptionHandlerMiddleware>();

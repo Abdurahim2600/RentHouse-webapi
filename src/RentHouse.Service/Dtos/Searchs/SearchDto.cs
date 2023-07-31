@@ -1,9 +1,8 @@
-﻿namespace RentHouse.DataAccess.ViewModel;
+﻿namespace RentHouse.Service.Dtos.Searchs;
 
-public class ApartmentViewModel
+public class SearchDto
 {
     public string Description { get; set; } = string.Empty;
-
 
     public double CommonPrice { get; set; }
 

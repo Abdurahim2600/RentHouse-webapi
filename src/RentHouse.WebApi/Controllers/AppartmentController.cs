@@ -19,7 +19,7 @@ namespace RentHouse.WebApi.Controllers
             this._service = service;
         }
         [HttpGet("GetAll")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1)
             => Ok(await _service.GetAllAsync(new PaginationParams(page, MaxPageSize)));
 

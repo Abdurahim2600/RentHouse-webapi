@@ -6,6 +6,5 @@ public class VerificationDto
 
     public int Attempt { get; set; }
 
-    
     public DateTime CreatedAt { get; set; }
 }
