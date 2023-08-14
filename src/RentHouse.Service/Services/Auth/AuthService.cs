@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using RentHouse.DataAccess.Interface.Users;
 using RentHouse.Domain.Entities.Users;
 using RentHouse.Domain.Exeptions.Auth;
@@ -25,8 +24,8 @@ public class AuthService : IAuthService
     private const string REGISTER_CACHE_KEY = "register_";
     private const string VERIFY_REGISTER_CACHE_KEY = "verify_register_";
     private const int VERIFICATION_MAXIMUM_ATTEMPTS = 3;
-    public AuthService(IMemoryCache memoryCache,IUserRepository userrepos,
-        IEmailSender emailSender,ITokenService tokenService)
+    public AuthService(IMemoryCache memoryCache, IUserRepository userrepos,
+        IEmailSender emailSender, ITokenService tokenService)
     {
         this._memoryCache = memoryCache;
         this._repository = userrepos;
@@ -60,12 +59,11 @@ public class AuthService : IAuthService
             _memoryCache.Set(REGISTER_CACHE_KEY + dto.Email, dto, TimeSpan.FromMinutes(CACHED_MINUTES_FOR_REGISTER));
         }
         return (Result: true, CachedMinutes: CACHED_MINUTES_FOR_REGISTER);
-
     }
 
     public async Task<(bool Result, int CachedVerificationMinutes)> SendCodeForRegisterAsync(string email)
     {
-        
+
         if (_memoryCache.TryGetValue(REGISTER_CACHE_KEY + email, out RegisterDto registerDto))
         {
             VerificationDto verificationDto = new VerificationDto();
@@ -132,7 +130,7 @@ public class AuthService : IAuthService
         user.FirstName = registerDto.FirstName;
         user.LastName = registerDto.LastName;
         user.Email = registerDto.Email;
-        
+
         user.Role = Domain.Enums.IDentityRole.User;
 
         var hasherResult = PasswordHashr.Hash(registerDto.Password);
@@ -145,5 +143,5 @@ public class AuthService : IAuthService
         return dbResult > 0;
     }
 
-    
+
 }

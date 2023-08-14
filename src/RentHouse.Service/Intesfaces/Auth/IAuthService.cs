@@ -1,5 +1,4 @@
-﻿using RentHouse.Domain.Entities.Users;
-using RentHouse.Service.Dtos.Auth;
+﻿using RentHouse.Service.Dtos.Auth;
 
 namespace RentHouse.Service.Intesfaces.Auth;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 
 namespace RentHouse.WebApi.Configurations;
-
+    
 public static class SwaggerAuthConfiguration
 {
     public static void ConfigureSwaggerAuth(this WebApplicationBuilder builder)
